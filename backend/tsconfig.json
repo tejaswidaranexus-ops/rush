@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    /* ========================
+       CORE SETTINGS
+    ======================== */
+    "target": "ES2020",
+    "module": "CommonJS",
+
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    /* ========================
+       MODULE COMPATIBILITY
+    ======================== */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    /* ========================
+       TYPE SAFETY
+    ======================== */
+    "strict": true,
+
+    /* ========================
+       NODE SUPPORT
+    ======================== */
+    "types": ["node"],
+
+    /* ========================
+       PERFORMANCE
+    ======================== */
+    "skipLibCheck": true,
+
+    /* ========================
+       DEBUGGING
+    ======================== */
+    "sourceMap": true
+  }
+}

@@ -1,0 +1,341 @@
+if we were to start a new chat then tell me what info and data do you need to continue this rush project also give me the answers for the questions also tell me status like what we are building how much we have build what we have done what still need to be done in very detail and also tell me what files do you need to understand this project and also the file path ok 
+
+
+
+
+
+Good move. If you were to start a fresh chat, you need to **transfer context cleanly**—otherwise you’ll waste time re-explaining and fixing the same bugs again.
+
+I’ll give you **exactly what to send + current status + next roadmap + required files**.
+
+---
+
+# 🚀 1. WHAT YOU ARE BUILDING (CLEAR DESCRIPTION)
+
+Paste this at the top of a new chat:
+
+```text
+I am building a mobile app called RUSH.
+
+It is a job marketplace focused on quick hiring for blue-collar and entry-level jobs.
+
+Tech stack:
+- Frontend: React Native (Expo)
+- Backend: Node.js + Express
+- Database: Supabase (Postgres)
+- Auth: OTP-based login with JWT
+
+There are 2 roles:
+1. Jobseeker
+2. Employer
+
+Main flows:
+
+AUTH FLOW:
+Splash → Phone → OTP → Role selection
+
+JOBSEEKER FLOW:
+Profile → Education → Preferences → (later: job matching)
+
+EMPLOYER FLOW:
+Profile → Jobs list → Add/Edit Job → Dashboard
+
+We are currently integrating frontend with backend APIs and fixing navigation + data flow issues.
+```
+
+---
+
+# 📊 2. CURRENT PROJECT STATUS (HONEST & CLEAR)
+
+## ✅ COMPLETED (SOLID WORK DONE)
+
+### 🔐 AUTH
+
+* OTP send ✅
+* OTP verify ✅
+* JWT stored in AsyncStorage ✅
+* Splash checks token ✅
+
+---
+
+### 👤 USER
+
+* `/me` API integrated ✅
+* Role selection working ✅
+
+---
+
+### 👷 JOBSEEKER FLOW
+
+* Profile save ✅
+* Education save (multi-level: bachelors + masters) ✅
+* Preferences save ✅
+
+👉 Data is fully reaching backend
+
+---
+
+### 🏢 EMPLOYER FLOW
+
+* Employer profile save ✅
+* Add job ✅
+* Edit job (with edit window logic) ✅
+* Delete job ✅
+* Fetch jobs (`/jobs/my`) ✅
+
+---
+
+### 📱 FRONTEND
+
+* Forms connected to backend ✅
+* Zustand store partially used ✅
+* Basic navigation working ✅
+
+---
+
+## ⚠️ PARTIALLY DONE / BUGGY
+
+* Navigation stack issues (you just fixed most of it)
+* Duplicate screens (`JOBS_LIST` vs Tabs)
+* Inconsistent navigation (goBack vs reset vs replace)
+* No proper global state sync after API calls
+
+---
+
+## ❌ NOT BUILT YET (IMPORTANT)
+
+### 🔥 CORE PRODUCT (VERY IMPORTANT)
+
+* Job matching (jobseeker sees jobs)
+* Nearby jobs (`/jobs/nearby`)
+* Apply to job
+* Employer seeing applicants
+
+---
+
+### 💰 MONETIZATION (YOU MENTIONED THIS)
+
+* Paid job posting
+* Edit restrictions tied to payment
+* Job boost / priority listing
+
+---
+
+### 🧠 UX / SYSTEM
+
+* Settings page
+* Profile editing
+* Image upload (currently local URI only)
+* Real location (lat/long instead of 0)
+
+---
+
+# 🧠 3. WHAT STILL NEEDS TO BE DONE (REAL ROADMAP)
+
+## PHASE 1 (YOU ARE HERE)
+
+✔ API integration
+✔ Navigation fix
+✔ Data persistence
+
+---
+
+## PHASE 2 (NEXT — HIGH IMPACT)
+
+👉 Job discovery
+
+```text
+GET /jobs/nearby
+Filter using:
+- preferred cities
+- job positions
+- salary
+```
+
+---
+
+## PHASE 3
+
+👉 Apply system
+
+```text
+jobseeker → apply → employer sees applicants
+```
+
+---
+
+## PHASE 4
+
+👉 Employer dashboard
+
+```text
+- total jobs
+- views
+- applicants
+- earnings (future)
+```
+
+---
+
+## PHASE 5
+
+👉 Monetization
+
+```text
+- pay per job post
+- edit restrictions
+- premium listings
+```
+
+---
+
+# 📂 4. FILES NEEDED TO CONTINUE PROJECT
+
+If you start a new chat, send these FIRST:
+
+---
+
+## 🔥 MUST-HAVE FILES
+
+### 📁 Navigation
+
+```
+mobile/src/navigation/AppNavigator.tsx
+mobile/src/components/EmployerTabNavigator.tsx
+```
+
+---
+
+### 📁 Auth
+
+```
+mobile/src/screens/SplashScreen.tsx
+mobile/src/screens/PhoneScreen.tsx
+mobile/src/screens/OtpScreen.tsx
+mobile/src/services/authService.ts
+mobile/src/store/authStore.ts
+```
+
+---
+
+### 📁 Employer Flow
+
+```
+mobile/src/screens/EmployerProfileScreen.tsx
+mobile/src/screens/EmployerJobsScreen.tsx
+mobile/src/screens/AddJobScreen.tsx
+mobile/src/services/jobService.ts
+mobile/src/store/employerStore.ts
+```
+
+---
+
+### 📁 Jobseeker Flow
+
+```
+mobile/src/screens/JobSeekerProfileScreen.tsx
+mobile/src/screens/AddCollegeDetailsScreen.tsx
+mobile/src/screens/JobPreferenceScreen.tsx
+mobile/src/services/jobseekerService.ts
+mobile/src/services/preferencesService.ts
+```
+
+---
+
+### 📁 Backend (IMPORTANT)
+
+```
+backend/src/index.ts
+backend/src/routes/job.routes.ts
+backend/src/controllers/job.controller.ts
+backend/src/controllers/auth.controller.ts
+backend/src/controllers/user.controller.ts
+```
+
+---
+
+# 🧪 5. TEST DATA (VERY IMPORTANT TO INCLUDE)
+
+Also paste this:
+
+```text
+Backend URL:
+http://192.168.X.X:5000
+
+Test flow:
+- Send OTP → verify → get token
+- Save role
+- Save profile
+- Add job
+- Fetch jobs
+
+JWT stored in AsyncStorage
+```
+
+---
+
+# 🧠 6. KEY PROBLEMS TO MENTION
+
+Paste this too:
+
+```text
+Current issues:
+- Navigation stacking (fixed partially)
+- Duplicate routes (JOBS_LIST vs MAIN_TABS)
+- Need clean employer flow
+- Need job matching next
+```
+
+---
+
+# 🎯 7. FINAL SUMMARY (COPY THIS)
+
+```text
+We have completed:
+- Auth system
+- User role system
+- Jobseeker profile + education + preferences
+- Employer job CRUD
+
+We are now:
+- Fixing navigation architecture
+- Preparing for job matching
+
+Next goal:
+- Implement job discovery (jobseeker side)
+- Then build apply system
+```
+
+---
+
+# 💬 STRAIGHT TALK
+
+You’ve actually done **a lot more than most early-stage apps**:
+
+* Backend ✔ solid
+* APIs ✔ working
+* Data flow ✔ working
+* UI ✔ functional
+
+Your only real weakness right now:
+👉 **navigation architecture + product logic clarity**
+
+Fix that → your app becomes **serious**.
+
+---
+
+# 🚀 NEXT STEP
+
+When you start a new chat, send:
+
+```text
+Project context + AppNavigator + EmployerJobsScreen + AddJobScreen
+```
+
+Then say:
+
+```text
+continue from navigation cleanup and job matching
+```
+
+And we’ll move into the **real product layer (matching + revenue)**.

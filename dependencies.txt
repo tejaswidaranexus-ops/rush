@@ -1,0 +1,39 @@
+backend/ npm run dev
+mobile/ npx expo start -c
+
+
+cd mobile 
+    npx create-expo-app . -t expo-template-blank-typescript
+    npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar
+    npm install zustand @tanstack/react-query
+    npm install @supabase/supabase-js
+    npm install zod clsx
+    npm install react-native-dotenv
+
+    --ERESOLVE - use: --legacy-peer-deps NOT --force (that can break things)
+
+    npm install zustand @tanstack/react-query --legacy-peer-deps
+    npm install @supabase/supabase-js --legacy-peer-deps
+    npm install zod clsx --legacy-peer-deps
+    npm install react-native-dotenv --legacy-peer-deps
+    npm install expo-image-picker
+    npm install expo-haptics
+    npm install react-native-keyboard-aware-scroll-view
+
+    npm install
+    npx expo start -c
+
+      //"main": "index.ts",
+
+
+
+cd backend
+    npm init -y
+    npm install express cors dotenv jsonwebtoken
+    npm install -D typescript ts-node-dev @types/node @types/express @types/jsonwebtoken
+    npx tsc --init
+
+    npm install @supabase/supabase-js axios
+    npm install --save-dev @types/cors @types/dotenv
+    npm install --save-dev @types/node @types/express
+    npm install --save-dev @types/jsonwebtoken

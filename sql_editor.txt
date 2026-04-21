@@ -1,0 +1,266 @@
+create table otp_codes (
+  id uuid default gen_random_uuid() primary key,
+  phone_number text not null,
+  otp text not null,
+  attempts int default 0,
+  expires_at timestamptz not null,
+  created_at timestamptz default now()
+);
+
+alter table otp_codes
+alter column expires_at type timestamptz;
+
+
+create table profiles (
+  id uuid default gen_random_uuid() primary key,
+
+  phone_number text unique not null,
+  role text check (role in ('jobseeker', 'employer', 'admin')),
+
+  full_name text,
+  profile_image_url text,
+
+  language text default 'english',
+
+  terms_accepted boolean default false,
+
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+
+alter table profiles
+add constraint phone_length check (char_length(phone_number) = 12);
+
+
+create table jobseeker_profiles (
+  id uuid default gen_random_uuid() primary key,
+
+  user_id uuid references profiles(id) on delete cascade,
+
+  gender text check (gender in ('male', 'female', 'other')),
+  dob date,
+
+  location_name text,
+  latitude float,
+  longitude float,
+  pincode text,
+
+  education_level text;
+  experience int;
+
+  created_at timestamptz default now()
+);
+
+create table jobseeker_profiles (
+  id uuid default gen_random_uuid() primary key,
+
+  user_id uuid references profiles(id) on delete cascade,
+
+  gender text check (gender in ('male', 'female', 'other')),
+  dob date,
+
+  location_name text,
+  latitude float,
+  longitude float,
+  pincode text,
+
+  education_level text,
+  experience int,
+
+  created_at timestamptz default now()
+);
+
+create table jobseeker_profiles (
+  id uuid default gen_random_uuid() primary key,
+
+  user_id uuid references profiles(id) on delete cascade,
+
+  gender text check (gender in ('male', 'female', 'other')),
+
+  dob date,
+
+  location_name text,
+  latitude float,
+  longitude float,
+
+  -- ✅ strict 6-digit validation
+  pincode text check (pincode ~ '^[0-9]{6}$'),
+
+  education_level text,
+
+  -- ✅ slider range (0–16 years)
+  experience int check (experience >= 0 and experience <= 16),
+
+  created_at timestamptz default now()
+);
+
+create table jobseeker_education (
+  id uuid default gen_random_uuid() primary key,
+
+  user_id uuid references profiles(id) on delete cascade,
+
+  education_level text check (
+    education_level in ('10th', '12th', 'bachelors', 'masters', 'other')
+  ),
+
+  institute_name text,
+  degree text,
+  specialization text,
+
+  start_year int,
+  end_year int,
+
+  created_at timestamptz default now()
+);
+
+
+
+create table jobseeker_preferences (
+  id uuid default gen_random_uuid() primary key,
+
+  user_id uuid references profiles(id) on delete cascade,
+
+  job_type text[], -- ['full-time', 'hourly', 'internship']
+  job_positions text[], -- ['plumber', 'driver']
+
+  expected_salary int,
+
+  preferred_cities text[],
+
+  created_at timestamptz default now()
+);
+
+
+
+create table employer_profiles (
+  id uuid default gen_random_uuid() primary key,
+
+  user_id uuid references profiles(id) on delete cascade,
+
+  gender text check (gender in ('male', 'female', 'other')),
+
+  business_name text,
+  business_location text,
+
+  latitude float,
+  longitude float,
+  pincode text,
+
+  business_email text,
+  has_business_email boolean default true,
+
+  is_verified boolean default false,
+
+  created_at timestamptz default now()
+);
+
+
+create table employer_profiles (
+  id uuid default gen_random_uuid() primary key,
+
+  user_id uuid not null unique
+    references profiles(id) on delete cascade,
+
+  gender text not null
+    check (gender in ('male', 'female', 'other')),
+
+  -- 👤 Full Name (2–50, alphabets + spaces)
+  full_name text not null
+    check (
+      char_length(full_name) between 2 and 50
+      and full_name ~ '^[A-Za-z ]+$'
+    ),
+
+  -- 🏢 Business Name (2–100, allowed chars)
+  business_name text not null
+    check (
+      char_length(business_name) between 2 and 100
+      and business_name ~ '^[A-Za-z0-9 .&-]+$'
+    ),
+
+  -- 📍 Location (2–100)
+  business_location text not null
+    check (
+      char_length(business_location) between 2 and 100
+      and business_location ~ '^[A-Za-z0-9, ]+$'
+    ),
+
+  latitude float,
+  longitude float,
+
+  -- 📌 Pincode (exactly 6 digits)
+  pincode char(6) not null
+    check (pincode ~ '^[0-9]{6}$'),
+
+  -- 📧 Email (nullable if user doesn't have one)
+  business_email text
+    check (
+      business_email is null
+      or business_email ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+    ),
+
+  has_business_email boolean not null default true,
+
+  is_verified boolean default false,
+
+  created_at timestamptz default now()
+);
+
+
+create table employer_documents (
+  id uuid default gen_random_uuid() primary key,
+
+  user_id uuid references profiles(id) on delete cascade,
+
+  document_url text,
+
+  created_at timestamptz default now()
+);
+
+
+create table jobs (
+  id uuid default gen_random_uuid() primary key,
+
+  employer_id uuid references profiles(id) on delete cascade,
+
+  title text not null,
+  category text,
+  description text,
+
+  skills text[],
+
+  openings int,
+  salary int,
+  payment_frequency text,
+
+  benefits text,
+
+  job_location text,
+  job_pincode text,
+  latitude float,
+  longitude float,
+
+  work_type text,
+  shift text,
+  duration text,
+
+  employer_name text,
+  contact text,
+
+  eligibility text,
+  terms text,
+  verification text,
+
+  is_active boolean default true,
+  is_editable boolean default true;
+  edit_expires_at timestamptz;
+
+  created_at timestamptz default now()
+);
+
+alter table jobs
+add column is_editable boolean default true;
+
+alter table jobs
+add column edit_expires_at timestamptz;

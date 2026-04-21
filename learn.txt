@@ -1,0 +1,5 @@
+🧠 WHY THIS STRUCTURE IS POWERFUL
+app/ → navigation only
+src/ → actual logic
+lib/ → external configs (Supabase)
+clean separation → scalable
