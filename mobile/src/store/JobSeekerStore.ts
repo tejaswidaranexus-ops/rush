@@ -10,7 +10,7 @@ type JobSeeker = {
   gender: string;
   dob: string;
   location: string;
-  pincode: number;
+  pincode: string;
 
   education: string;
   experience: number;
@@ -55,7 +55,7 @@ type JobSeekerState = {
   gender: string;
   dob: string;
   location: string;
-  pincode: number;
+  pincode: string;
   education: string;
   experience: number;
   city: string;
@@ -99,7 +99,7 @@ type JobSeekerState = {
   setGender: (val: string) => void;
   setDob: (val: string) => void;
   setLocation: (val: string) => void;
-  setPincode: (val: number) => void;
+  setPincode: (val: string) => void;
   setEducation: (val: string) => void;
   setExperience: (val: number) => void;
   setCity: (val: string) => void;
@@ -148,7 +148,7 @@ export const useJobSeekerStore = create<JobSeekerState>((set, get) => ({
   gender: "",
   dob: "",
   location: "",
-  pincode: 0,
+  pincode: "",
   education: "",
   experience: 0,
   city: "",
@@ -272,7 +272,7 @@ export const useJobSeekerStore = create<JobSeekerState>((set, get) => ({
       gender: "",
       dob: "",
       location: "",
-      pincode: 0,
+      pincode: "",
       education: "",
       experience: 0,
       city: "",

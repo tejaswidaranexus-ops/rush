@@ -132,17 +132,24 @@ export default function TermsScreen({ navigation, route }: any) {
 
         <Text style={styles.heading(theme)}>7. Chat & Communication</Text>
         <Text style={styles.text(theme)}>
-            • The chat feature is for <Text style={{ fontWeight: "bold" }}>job-related communication only</Text>.
-            {"\n"}
-            • Be <Text style={{ fontWeight: "bold" }}>professional and respectful</Text>.
-            {"\n"}
-            • Do not share sensitive info like:
-            {"\n"}   – Bank details
-            {"\n"}   – OTPs
-            {"\n"}   – Personal financial data
-            {"\n\n"}
-            We may <Text style={{ fontWeight: "bold" }}>monitor chats</Text> to prevent fraud or misuse.
-        </Text>
+  • The chat feature is for job-related communication only.
+</Text>
+
+<Text style={styles.text(theme)}>
+  • Be professional and respectful.
+</Text>
+
+<Text style={styles.text(theme)}>
+  • Do not share sensitive info like:
+</Text>
+
+<Text style={styles.text(theme)}>• Bank details</Text>
+<Text style={styles.text(theme)}>• OTPs</Text>
+<Text style={styles.text(theme)}>• Personal financial data</Text>
+
+<Text style={styles.text(theme)}>
+  We may <Text style={{ fontWeight: "bold" }}>monitor chats</Text> to prevent fraud or misuse.
+</Text> 
 
         <Text style={styles.heading(theme)}>8. Payments (If Introduced)</Text>
         <Text style={styles.text(theme)}>
@@ -164,9 +171,9 @@ export default function TermsScreen({ navigation, route }: any) {
             • By posting, you allow us to use it to run and improve the platform.
             {"\n\n"}
             RUSH owns:
-            {"\n"}   – App design
-            {"\n"}   – Logo & branding
-            {"\n"}   – Technology
+            <Text style={styles.text(theme)}>• App design</Text>
+            <Text style={styles.text(theme)}>• Logo & branding</Text>
+            <Text style={styles.text(theme)}>• Technology</Text>
             {"\n\n"}
             Do not <Text style={{ fontWeight: "bold" }}>copy or misuse</Text> our platform or brand.
         </Text>
@@ -176,9 +183,9 @@ export default function TermsScreen({ navigation, route }: any) {
             • Your data is handled as per our <Text style={{ fontWeight: "bold" }}>Privacy Policy</Text>.
             {"\n"}
             • By using RUSH, you agree that we may:
-            {"\n"}   – Collect and store your data
-            {"\n"}   – Use it to improve services
-            {"\n"}   – Ensure platform safety
+            <Text style={styles.text(theme)}>• Collect and store your data</Text>
+            <Text style={styles.text(theme)}>• Use it to improve services</Text>
+            <Text style={styles.text(theme)}>• Ensure platform safety</Text>
         </Text>
 
         <Text style={styles.heading(theme)}>11. Disclaimer</Text>
@@ -186,9 +193,9 @@ export default function TermsScreen({ navigation, route }: any) {
             RUSH is only a <Text style={{ fontWeight: "bold" }}>connecting platform</Text>.
             {"\n\n"}
             We do <Text style={{ fontWeight: "bold" }}>NOT</Text>:
-            {"\n"}   • Guarantee jobs
-            {"\n"}   • Verify every user
-            {"\n"}   • Control employer or worker behavior
+            <Text style={styles.text(theme)}>• Guarantee jobs</Text>
+            <Text style={styles.text(theme)}>• Verify every user</Text>
+            <Text style={styles.text(theme)}>• Control employer or worker behavior</Text>
             {"\n\n"}
             Use the platform at your <Text style={{ fontWeight: "bold" }}>own risk</Text>.
         </Text>
@@ -198,10 +205,10 @@ export default function TermsScreen({ navigation, route }: any) {
             To the maximum extent allowed by law:
             {"\n\n"}
             RUSH is not responsible for:
-            {"\n"}   • Job loss or missed opportunities
-            {"\n"}   • Fake jobs or users
-            {"\n"}   • Communication issues
-            {"\n"}   • Data loss or unauthorized access
+             <Text style={styles.text(theme)}>• Job loss or missed opportunities</Text>
+              <Text style={styles.text(theme)}>• Fake jobs or users</Text>
+              <Text style={styles.text(theme)}>• Communication issues</Text>
+              <Text style={styles.text(theme)}>• Data loss or unauthorized access</Text>
             {"\n\n"}
             Our total liability (if any) will not exceed the amount you <Text style={{ fontWeight: "bold" }}>paid to us in the last 6 months</Text>.
         </Text>
@@ -209,9 +216,9 @@ export default function TermsScreen({ navigation, route }: any) {
         <Text style={styles.heading(theme)}>13. Account Suspension & Termination</Text>
         <Text style={styles.text(theme)}>
             • We may <Text style={{ fontWeight: "bold" }}>suspend or delete your account</Text> if you:
-            {"\n"}   – Break these Terms
-            {"\n"}   – Post harmful or fake content
-            {"\n"}   – Misuse the platform
+            {"\n"}   • Break these Terms
+            {"\n"}   • Post harmful or fake content
+            {"\n"}   • Misuse the platform
             {"\n\n"}
             • You can also <Text style={{ fontWeight: "bold" }}>delete your account anytime</Text>.
         </Text>
@@ -221,7 +228,7 @@ export default function TermsScreen({ navigation, route }: any) {
             • These Terms follow the <Text style={{ fontWeight: "bold" }}>laws of India</Text>.
             {"\n"}
             • Any disputes will be handled in courts located in:
-            {"\n"}   – <Text style={{ fontWeight: "bold" }}>Hyderabad</Text> / Bengaluru (choose your city).
+            {"\n"}   • <Text style={{ fontWeight: "bold" }}>Hyderabad</Text> / Bengaluru (choose your city).
         </Text>
 
         <Text style={styles.heading(theme)}>15. Changes to Terms</Text>

@@ -89,8 +89,9 @@ export default function EmployerProfileScreen({ navigation }: Props) {
     gender &&
     business.trim().length > 0 &&
     location.trim().length > 0 &&
-    pincode >= 100000 &&
-    pincode <= 999999 &&
+    pincode.length === 6 && /^[0-9]{6}$/.test(pincode);
+    //pincode >= 100000 &&
+    //pincode <= 999999 &&
     (email || noEmail) &&
     businessProofs.length >= 1;
   
@@ -282,7 +283,7 @@ export default function EmployerProfileScreen({ navigation }: Props) {
           value={pincode ? pincode.toString() : ""}
           onChangeText={(text) => {
             const numericText = text.replace(/[^0-9]/g, "").slice(0, 6);
-            setPincode(Number(numericText));
+            setPincode(numericText);
             setPincodeError(""); 
           }}
           keyboardType="numeric"

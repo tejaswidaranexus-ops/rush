@@ -21,7 +21,12 @@ export default function SplashScreen({ navigation }: any) {
 
     useEffect(() => {
       startAnimations();
-      handleNavigation();
+
+      const timer = setTimeout(() => {
+        handleNavigation();
+      }, 1500);
+
+      return () => clearTimeout(timer);
     }, []);
   
     const startAnimations = () => {

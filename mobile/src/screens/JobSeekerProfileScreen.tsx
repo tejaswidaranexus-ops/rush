@@ -96,8 +96,9 @@ export default function JobSeekerProfileScreen({ navigation }: any) {
     location.trim().length > 0 &&
     education &&
     experience &&
-    pincode >= 100000 &&
-    pincode <= 999999;
+    pincode.length === 6 && /^[0-9]{6}$/.test(pincode);
+    //pincode >= 100000 &&
+    //pincode <= 999999;
 
   const pickProfileImage = async () => {
     const files = await pickFiles("gallery", "profile");
@@ -124,11 +125,11 @@ export default function JobSeekerProfileScreen({ navigation }: any) {
     //<SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
     <View style={{ flex: 1 }}>
       <FormScreenWrapper>
-          <ScrollView
+        <ScrollView
             style={{ flex: 1, backgroundColor: theme.background }}
             contentContainerStyle={{ padding: 20 }}
             keyboardShouldPersistTaps="handled"
-          >
+            >
         {/* PROFILE IMAGE */}
         <View style={styles.profileRow}>
           
@@ -198,7 +199,7 @@ export default function JobSeekerProfileScreen({ navigation }: any) {
 
         {errors.name && (
           <Text style={{ color: "red", fontSize: 12 }}>
-            {errors.name}
+            {String(errors.name)}
           </Text>
         )}
 
@@ -244,7 +245,7 @@ export default function JobSeekerProfileScreen({ navigation }: any) {
 
         {errors.gender && (
           <Text style={{ color: "red", fontSize: 12 }}>
-            {errors.gender}
+            {String(errors.gender)}
           </Text>
         )}
 
@@ -288,7 +289,7 @@ export default function JobSeekerProfileScreen({ navigation }: any) {
 
         {errors.dob && (
           <Text style={{ color: "red", fontSize: 12 }}>
-            {errors.dob}
+            {String(errors.dob)}
           </Text>
         )}
 
@@ -310,7 +311,7 @@ export default function JobSeekerProfileScreen({ navigation }: any) {
 
         {errors.location && (
           <Text style={{ color: "red", fontSize: 12 }}>
-            {errors.location}
+            {String(errors.location)}
           </Text>
         )}
 
@@ -320,12 +321,13 @@ export default function JobSeekerProfileScreen({ navigation }: any) {
           value={pincode ? pincode.toString() : ""}
           onChangeText={(text) => {
             const numericText = text.replace(/[^0-9]/g, "").slice(0, 6);
-            setPincode(Number(numericText));
+            setPincode(numericText);
 
             if (errors.pincode) {
               setErrors(prev => ({ ...prev, pincode: "" }));
             }
           }}
+
           keyboardType="numeric"
           maxLength={6}
           style={[
@@ -348,7 +350,7 @@ export default function JobSeekerProfileScreen({ navigation }: any) {
         {/* 👇 ACTUAL ERROR (only after submit) */}
         {errors.pincode && (
           <Text style={{ color: "red", fontSize: 12 }}>
-            {errors.pincode}
+            {String(errors.pincode)}
           </Text>
         )}
 
@@ -365,7 +367,7 @@ export default function JobSeekerProfileScreen({ navigation }: any) {
 
         {errors.education && (
           <Text style={{ color: "red", fontSize: 12 }}>
-            {errors.education}
+            {String(errors.education)}
           </Text>
         )}
 
@@ -387,7 +389,7 @@ export default function JobSeekerProfileScreen({ navigation }: any) {
 
         {errors.experience && (
           <Text style={{ color: "red", fontSize: 12 }}>
-            {errors.experience}
+            {String(errors.experience)}
           </Text>
         )}
 
@@ -427,7 +429,7 @@ export default function JobSeekerProfileScreen({ navigation }: any) {
                 location_name: location.trim(),
                 latitude: 0,
                 longitude: 0,
-                pincode: pincode.toString(),
+                pincode: pincode,
                 education_level: education,
                 experience: experience,
               };
@@ -542,7 +544,6 @@ export default function JobSeekerProfileScreen({ navigation }: any) {
         </View>
       )}
       
-
       </ScrollView>
     </FormScreenWrapper>
 

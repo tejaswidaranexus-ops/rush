@@ -51,7 +51,7 @@ type Employer = {
   gender: string;
   business: string;
   location: string;
-  pincode: number;
+  pincode: string;
   email: string;
   noEmail: boolean;
 
@@ -71,7 +71,7 @@ type EmployerState = {
   gender: string;
   business: string;
   location: string;
-  pincode: number;
+  pincode: string;
   email: string;
   noEmail: boolean;
   businessLinks: string[]; // website / instagram / youtube
@@ -113,7 +113,7 @@ type EmployerState = {
   setGender: (val: string) => void;
   setBusiness: (val: string) => void;
   setLocation: (val: string) => void;
-  setPincode: (val: number) => void;
+  setPincode: (val: string) => void;
   setEmail: (val: string) => void;
   setNoEmail: (val: boolean) => void;
   setBusinessLinks: (links: string[]) => void;
@@ -166,7 +166,7 @@ export const useEmployerStore = create<EmployerState>((set, get) => ({
   gender: "",
   business: "",
   location: "",
-  pincode: 0,
+  pincode: "",
   email: "",
   noEmail: false,
   businessLinks: [],
@@ -383,7 +383,7 @@ export const useEmployerStore = create<EmployerState>((set, get) => ({
     gender: "",
     business: "",
     location: "",
-    pincode: 0,
+    pincode: "",
     email: "",
     noEmail: false,
     businessProofs: [],
