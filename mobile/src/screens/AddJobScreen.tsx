@@ -23,6 +23,14 @@ import Step2Compensation from "../components/jobSteps/Step2Compensation";
 import Step3JobDetails from "../components/jobSteps/Step3JobDetails";
 import Step4Employer from "../components/jobSteps/Step4Employer";
 
+import { validateForm } from "../validation/validate";
+import {
+  step1Schema,
+  step2Schema,
+  step3Schema,
+  step4Schema,
+} from "../validation/jobValidation";
+
 export default function AddJobScreen({ navigation, route }: any) {
   const theme = useTheme();
   const job = route?.params?.job;
@@ -37,6 +45,8 @@ export default function AddJobScreen({ navigation, route }: any) {
   const [showDomainModal, setShowDomainModal] = useState(false);
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const roles = jobRolesByDomain[store.domain] ?? [];
 
@@ -65,7 +75,7 @@ export default function AddJobScreen({ navigation, route }: any) {
       store.setBenefits(job.benefits || "");
 
       store.setJobLocation(job.job_location);
-      store.setJobPincode(Number(job.job_pincode));
+      store.setJobPincode(job.job_pincode?.toString() || "");
 
       store.setWorkType(job.work_type);
       store.setShift(job.shift);
@@ -107,14 +117,117 @@ export default function AddJobScreen({ navigation, route }: any) {
     store.openings > 0 &&
     store.salary > 0 &&
     store.jobLocation &&
-    store.jobPincode >= 100000 &&
-    store.jobPincode <= 999999 &&
+    store.jobPincode.length === 6 &&
+    //store.jobPincode >= 100000 &&
+    //store.jobPincode <= 999999 &&
     store.workType &&
     store.shift &&
     store.employerName.trim() !== "" &&
-    store.contact.trim() !== "";
+    /^[0-9]{10}$/.test(store.contact);
+
+
+  const handleNext = () => {
+    let schema: any;
+    let formData: any = {};
+
+    if (step === 1) {
+      schema = step1Schema;
+      formData = {
+        title: store.title,
+        domain: store.domain,
+        role: store.role,
+        description: store.description,
+        skills: store.skills,
+        openings: store.openings,
+      };
+    }
+
+    if (step === 2) {
+      schema = step2Schema;
+      formData = {
+        salary: store.salary,
+        paymentFrequency: store.paymentFrequency,
+        benefits: store.benefits,
+      };
+    }
+
+    if (step === 3) {
+      schema = step3Schema;
+      formData = {
+        jobLocation: store.jobLocation,
+        jobPincode: store.jobPincode,
+        workType: store.workType,
+        shift: store.shift,
+        duration: store.duration,
+      };
+    }
+
+    const validationErrors = validateForm(formData, schema);
+
+    if (step === 3) {
+      if (!store.jobPincode || store.jobPincode.length !== 6) {
+        validationErrors.jobPincode = "Valid 6-digit pincode required";
+      }
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      console.log("Errors:", validationErrors);
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
+    setStep(step + 1);
+  };
+
+
+  
 
   const handleSubmit = async () => {
+    const allSchemas = {
+      ...step1Schema,
+      ...step2Schema,
+      ...step3Schema,
+      ...step4Schema,
+    };
+
+    const formData = {
+      title: store.title,
+      domain: store.domain,
+      role: store.role,
+      description: store.description,
+      skills: store.skills
+        ? store.skills
+            .split(/[, ]+/) // 🔥 split on comma OR space
+            .map((s: string) => s.trim().toLowerCase())
+            .filter(Boolean)
+        : [],
+      openings: store.openings,
+
+      salary: store.salary,
+      paymentFrequency: store.paymentFrequency,
+      benefits: store.benefits,
+
+      jobLocation: store.jobLocation,
+      jobPincode: store.jobPincode,
+      workType: store.workType,
+      shift: store.shift,
+      duration: store.duration,
+
+      employerName: store.employerName,
+      contact: store.contact,
+      eligibility: store.eligibility,
+      terms: store.terms,
+      verification: store.verification,
+    };
+
+    const validationErrors = validateForm(formData, allSchemas);
+
+    if (Object.keys(validationErrors).length > 0) {
+      console.log("Step4 Errors:", validationErrors);
+      setErrors(validationErrors);
+      return;
+    }
     const payload = {
       title: store.title,
       domain: store.domain,
@@ -122,7 +235,10 @@ export default function AddJobScreen({ navigation, route }: any) {
       description: store.description,
 
       skills: store.skills
-        ? store.skills.split(",").map((s: string) => s.trim().toLowerCase())
+        ? store.skills
+            .split(/[, ]+/) // ✅ handles comma + space
+            .map((s: string) => s.trim().toLowerCase())
+            .filter(Boolean)
         : [],
 
       openings: store.openings,
@@ -131,7 +247,7 @@ export default function AddJobScreen({ navigation, route }: any) {
       benefits: store.benefits,
 
       job_location: store.jobLocation.toLowerCase(),
-      job_pincode: store.jobPincode.toString(),
+      job_pincode: store.jobPincode,
 
       work_type: store.workType.toLowerCase(),
       shift: store.shift,
@@ -181,6 +297,7 @@ export default function AddJobScreen({ navigation, route }: any) {
             <Step1BasicInfo
               theme={theme}
               store={store}
+              errors={errors}
               onOpenDomain={() => setShowDomainModal(true)}
               onOpenRole={() => {
                 if (!store.domain) {
@@ -193,15 +310,27 @@ export default function AddJobScreen({ navigation, route }: any) {
           )}
 
           {step === 2 && (
-            <Step2Compensation theme={theme} store={store} />
+            <Step2Compensation
+              theme={theme}
+              store={store}
+              errors={errors}
+            />
           )}
 
           {step === 3 && (
-            <Step3JobDetails theme={theme} store={store} />
+            <Step3JobDetails
+              theme={theme}
+              store={store}
+              errors={errors}
+            />
           )}
 
           {step === 4 && (
-            <Step4Employer theme={theme} store={store} />
+            <Step4Employer 
+              theme={theme} 
+              store={store} 
+              errors={errors} 
+            />
           )}
         </ScrollView>
 
@@ -240,7 +369,7 @@ export default function AddJobScreen({ navigation, route }: any) {
           <View style={{ flex: 1, alignItems: "flex-end" }}>
             {step < 4 ? (
               <TouchableOpacity
-                onPress={() => setStep(step + 1)}
+                onPress={handleNext}
                 style={{
                   paddingVertical: 10,
                   paddingHorizontal: 16,

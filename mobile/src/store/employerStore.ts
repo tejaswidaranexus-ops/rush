@@ -25,7 +25,7 @@ type Job = {
   benefits?: string;
 
   jobLocation: string;
-  jobPincode: number;
+  jobPincode: string;
 
   workType: string;
   shift: string;
@@ -92,7 +92,7 @@ type EmployerState = {
   paymentFrequency: string;
   benefits: string;
   jobLocation: string;
-  jobPincode: number;
+  jobPincode: string;
   workType: string;
   shift: string;
   duration: string;
@@ -131,7 +131,7 @@ type EmployerState = {
   setPaymentFrequency: (val: string) => void;
   setBenefits: (val: string) => void;
   setJobLocation: (val: string) => void;
-  setJobPincode: (val: number) => void;
+  setJobPincode: (val: string) => void;
   setWorkType: (val: string) => void;
   setShift: (val: string) => void;
   setDuration: (val: string) => void;
@@ -184,7 +184,7 @@ export const useEmployerStore = create<EmployerState>((set, get) => ({
   paymentFrequency: "",
   benefits: "",
   jobLocation: "",
-  jobPincode: 0,
+  jobPincode: "",
   workType: "",
   shift: "",
   duration: "",
@@ -317,7 +317,7 @@ export const useEmployerStore = create<EmployerState>((set, get) => ({
       paymentFrequency: "",
       benefits: "",
       jobLocation: "",
-      jobPincode: 0,
+      jobPincode: "",
       workType: "",
       shift: "",
       duration: "",
@@ -342,7 +342,7 @@ export const useEmployerStore = create<EmployerState>((set, get) => ({
       paymentFrequency: "",
       benefits: "",
       jobLocation: "",
-      jobPincode: 0,
+      jobPincode: "",
       workType: "",
       shift: "",
       duration: "",

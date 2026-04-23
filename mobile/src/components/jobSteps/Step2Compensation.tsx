@@ -12,9 +12,10 @@ import styles from "../../styles/AddJob.styles";
 type Props = {
   theme: any;
   store: any;
+  errors: Record<string, string>; 
 };
 
-export default function Step2Compensation({ theme, store }: Props) {
+export default function Step2Compensation({ theme, store, errors }: Props) {
   const {
     salary, setSalary,
     paymentFrequency, setPaymentFrequency,
@@ -34,13 +35,20 @@ export default function Step2Compensation({ theme, store }: Props) {
         Salary *
       </Text>
       <TextInput
-        value={salary?.toString()}
-        onChangeText={(t) => setSalary(Number(t) || 0)}
+        value={salary ? salary.toString() : ""}
+        onChangeText={(t) => {
+          const clean = t.replace(/[^0-9]/g, "");
+          setSalary(Number(clean) || 0);
+        }}
         keyboardType="numeric"
         placeholder="e.g. 15000"
         placeholderTextColor="#888"
         style={[styles.input, { color: theme.text }]}
       />
+
+      {errors.salary && (
+        <Text style={{ color: "red" }}>{errors.salary}</Text>
+      )}
 
       {/* PAYMENT FREQUENCY */}
       <Text style={[styles.labelStyle, { color: theme.text }]}>
@@ -68,6 +76,9 @@ export default function Step2Compensation({ theme, store }: Props) {
           );
         })}
       </View>
+      {errors.paymentFrequency && (
+        <Text style={{ color: "red" }}>{errors.paymentFrequency}</Text>
+      )}
 
       {/* BENEFITS */}
       <Text style={[styles.labelStyle, { color: theme.text }]}>
@@ -76,10 +87,15 @@ export default function Step2Compensation({ theme, store }: Props) {
       <TextInput
         value={benefits}
         onChangeText={setBenefits}
+        maxLength={200} // ✅ ADD
         placeholder="e.g. PF, Insurance"
         placeholderTextColor="#888"
         style={[styles.input, { color: theme.text }]}
       />
+
+      {errors.benefits && (
+        <Text style={{ color: "red" }}>{errors.benefits}</Text>
+      )}
     </View>
   );
 }

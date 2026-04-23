@@ -32,7 +32,7 @@ export default function JobDetailsScreen({ route, navigation }: any) {
   };
 
   const handleEdit = () => {
-    navigation.navigate("AddJob", { job });
+    navigation.navigate("ADD_JOB", { job });
   };
 
 

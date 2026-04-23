@@ -5,9 +5,10 @@ import styles from "../../styles/AddJob.styles";
 type Props = {
   theme: any;
   store: any;
+  errors: Record<string, string>; 
 };
 
-export default function Step3JobDetails({ theme, store }: Props) {
+export default function Step3JobDetails({ theme, store, errors }: Props) {
 
     const {
     jobLocation, setJobLocation,
@@ -18,7 +19,7 @@ export default function Step3JobDetails({ theme, store }: Props) {
     } = store;
 
 
-  const [pincodeError, setPincodeError] = useState("");
+  //const [pincodeError, setPincodeError] = useState("");
 
   // 🔁 Reusable chip group (same as your screen)
   const ChipGroup = ({
@@ -71,15 +72,17 @@ export default function Step3JobDetails({ theme, store }: Props) {
         placeholderTextColor="#888"
         style={[styles.input, { color: theme.text }]}
       />
+      {errors.jobLocation && (
+        <Text style={{ color: "red" }}>{errors.jobLocation}</Text>
+      )}
 
       {/* PINCODE */}
       <Text style={[styles.labelStyle, { color: theme.text }]}>Pincode *</Text>
       <TextInput
-        value={jobPincode?.toString()}
+        value={jobPincode}
         onChangeText={(text) => {
           const clean = text.replace(/[^0-9]/g, "").slice(0, 6);
-          setJobPincode(Number(clean));
-          setPincodeError(clean.length === 6 ? "" : "Invalid pincode");
+          setJobPincode(clean);
         }}
         keyboardType="numeric"
         placeholder="6-digit pincode"
@@ -88,13 +91,13 @@ export default function Step3JobDetails({ theme, store }: Props) {
           styles.input,
           {
             color: theme.text,
-            borderColor: pincodeError ? "red" : theme.border,
+            borderColor: errors.jobPincode ? "red" : theme.border,
           },
         ]}
       />
-      {pincodeError ? (
-        <Text style={{ color: "red" }}>{pincodeError}</Text>
-      ) : null}
+      {errors.jobPincode && (
+        <Text style={{ color: "red" }}>{errors.jobPincode}</Text>
+      )}
 
       {/* WORK TYPE */}
       <Text style={[styles.labelStyle, { color: theme.text }]}>Work Type *</Text>
@@ -103,6 +106,9 @@ export default function Step3JobDetails({ theme, store }: Props) {
         selected={workType}
         onSelect={setWorkType}
       />
+      {errors.workType && (
+        <Text style={{ color: "red" }}>{errors.workType}</Text>
+      )}
 
       {/* SHIFT */}
       <Text style={[styles.labelStyle, { color: theme.text }]}>Shift *</Text>
@@ -111,16 +117,24 @@ export default function Step3JobDetails({ theme, store }: Props) {
         selected={shift}
         onSelect={setShift}
       />
+      {errors.shift && (
+        <Text style={{ color: "red" }}>{errors.shift}</Text>
+      )}
 
       {/* DURATION */}
       <Text style={[styles.labelStyle, { color: theme.text }]}>Duration</Text>
       <TextInput
         value={duration}
         onChangeText={setDuration}
+        maxLength={50}
         placeholder="e.g. 3 months"
         placeholderTextColor="#888"
         style={[styles.input, { color: theme.text }]}
       />
+
+      {errors.duration && (
+        <Text style={{ color: "red" }}>{errors.duration}</Text>
+      )}
     </View>
   );
 }
