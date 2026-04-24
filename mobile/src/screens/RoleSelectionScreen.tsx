@@ -296,7 +296,7 @@ export default function RoleSelectionScreen({ navigation }: any) {
 
             setUser(res.user);
 
-            navigation.replace("EMPLOYER_PROFILE");
+            navigation.replace("EMPLOYER_PROFILE_CREATE");
           } catch (error) {
             console.log("Role error:", error);
           }

@@ -6,6 +6,7 @@ import { useAuthStore } from "../store/authStore";
 
 import { verifyOtp } from "../services/authService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AlertModal from "../components/AlertModal";
 
 
 export default function OtpScreen({ route, navigation }: any) {
@@ -15,6 +16,8 @@ export default function OtpScreen({ route, navigation }: any) {
   const { phone } = route.params;
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   const isValid = otp.every((d) => d !== "");
 
@@ -153,9 +156,21 @@ export default function OtpScreen({ route, navigation }: any) {
 
             navigation.replace("ROLE");
 
-          } catch (error) {
-            console.log("Verify OTP error:", error);
-          }
+          } catch (error: any) {
+              console.log("Verify OTP error:", error);
+
+              const message =
+                error?.response?.data?.error || "Something went wrong";
+
+              setAlertMessage(message);
+              setAlertVisible(true);
+
+              setOtp(["", "", "", "", "", ""]);
+
+              setTimeout(() => {
+                inputs.current[0]?.focus();
+              }, 100);
+            }
         }}
         style={{
           backgroundColor: isValid ? theme.primary : "#555",
@@ -167,6 +182,13 @@ export default function OtpScreen({ route, navigation }: any) {
       >
         <Text style={{ color: "#fff" }}>Proceed</Text>
       </TouchableOpacity>
+
+      <AlertModal
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={() => setAlertVisible(false)}
+        theme={theme}
+      />
     </View>
   );
 }

@@ -9,47 +9,46 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { useState } from "react";
-import { useTheme } from "../hooks/useTheme";
-import { typography } from "../styles/typography";
+import { useEffect, useState } from "react";
+import { useTheme } from "../../hooks/useTheme";
+import { typography } from "../../styles/typography";
 import { FontAwesome } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import * as Haptics from "expo-haptics";
 import { Alert } from "react-native";
-import { useEmployerStore, type FileType } from "../store/employerStore";
+import { useEmployerStore, type FileType } from "../../store/employerStore";
 import { Image } from "react-native";
-import styles from "../styles/EmployerProfile.styles";
+import styles from "../../styles/EmployerProfile.styles";
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
+import { RootStackParamList } from '../../navigation/AppNavigator';
 import { useNavigation } from '@react-navigation/native';
 
-import { saveEmployerProfile } from "../services/employerService";
+import { saveEmployerProfile } from "../../services/employerService";
 
-import UploadModal from "../components/UploadModal";
-import { useFileUpload } from "../hooks/useFileUpload";
+import UploadModal from "../../components/UploadModal";
+import { useFileUpload } from "../../hooks/useFileUpload";
 
-import { validateField, validateForm } from "../validation/validate";
+import { getEmployerProfile } from "../../services/employerService";
+
+import { validateField, validateForm } from "../../validation/validate";
 import {
   fullNameRules,
   businessNameRules,
   locationRules,
   emailRules,
-} from "../validation/rules";
-import { EmployerSchema } from "../validation/employer";
+} from "../../validation/rules";
+import { EmployerSchema } from "../../validation/employer";
 
-import FormScreenWrapper from "../components/FormScreenWrapper";
-
-
-
-type Props = {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'EMPLOYER_PROFILE'>;
-};
+import FormScreenWrapper from "../../components/FormScreenWrapper";
+import ProfileImagePicker from "../../components/ProfileImagePicker";
 
 
-export default function EmployerProfileScreen({ navigation }: Props) {
+
+export default function EmployerProfileCreateScreen() {
+  const navigation = useNavigation<any>();
   const theme = useTheme();
   const [pincodeError, setPincodeError] = useState("");
   const [duplicateError, setDuplicateError] = useState("");
@@ -59,6 +58,7 @@ export default function EmployerProfileScreen({ navigation }: Props) {
   const [showRemoveModal, setShowRemoveModal] = useState(false);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
 
 
   const {
@@ -74,6 +74,8 @@ export default function EmployerProfileScreen({ navigation }: Props) {
 
     setFirstTimeFlow,
   } = useEmployerStore();
+
+
 
   /*const [name, setName] = useState("");
   const [gender, setGender] = useState("");
@@ -136,6 +138,7 @@ export default function EmployerProfileScreen({ navigation }: Props) {
 
 
 
+
   return (
     <View style={{ flex: 1 }}>
      <FormScreenWrapper>
@@ -146,49 +149,14 @@ export default function EmployerProfileScreen({ navigation }: Props) {
         >
         {/* Profile */}
         {/* PROFILE IMAGE */}
-        <View style={styles.profileRow}>
-  
-        <TouchableOpacity onPress={() => {
-          setUploadType("profile");
-          setShowModal(true);
-        }}>
-          <View style={styles.profileWrapper}>
-          <View
-            style={[
-              styles.profileCircle,
-              {
-                backgroundColor: theme.mode === "dark" ? "#333" : "#ddd",
-                borderColor: theme.primary,
-                overflow: "hidden",
-                position: "relative",
-              },
-            ]}
-          >
-            {profileImage && profileImage.length > 0 ? (
-              <Image
-                source={{ uri: profileImage }}
-                style={{ width: "100%", height: "100%" }}
-              />
-            ) : (
-              <FontAwesome name="user" size={30} color="#fff" />
-            )}
-            </View>
-
-            <View style={[styles.editIcon, { backgroundColor: theme.primary }]}>
-              <FontAwesome name="edit" size={14} color="#fff" />
-            </View>
-          </View>
-        </TouchableOpacity>
-
-        <View style={{ marginLeft: 15 }}>
-          <Text style={[styles.label, { color: theme.text, marginTop: 0 }]}>
-            Add profile picture
-          </Text>
-          <Text style={styles.subText}>
-            Helps build trust with candidates
-          </Text>
-        </View>
-      </View>
+        <ProfileImagePicker
+          image={profileImage}
+          theme={theme}
+          onPick={() => {
+            setUploadType("profile");
+            setShowModal(true);
+          }}
+        />
 
         {/* NAME */}
         <Text style={[styles.label, { color: theme.text }]}>
@@ -376,6 +344,7 @@ export default function EmployerProfileScreen({ navigation }: Props) {
               <Image
                 source={{ uri: file.uri }}
                 style={{ width: "100%", height: "100%" }}
+                resizeMode="cover"
               />
 
               {/* REMOVE BUTTON */}
@@ -472,7 +441,7 @@ export default function EmployerProfileScreen({ navigation }: Props) {
 
         {/* BUTTON */}
         <TouchableOpacity
-          disabled={!isValid}
+          disabled={!isValid || submitting}
           style={[
             styles.saveButton,
             {
@@ -482,6 +451,8 @@ export default function EmployerProfileScreen({ navigation }: Props) {
             },
           ]}
           onPress={async () => {
+            if (submitting) return;
+
             const data = {
               name,
               businessName: business,
@@ -503,6 +474,9 @@ export default function EmployerProfileScreen({ navigation }: Props) {
             }
 
             try {
+
+              setSubmitting(true);
+
               const payload = {
                 full_name: name.trim(),
                 profile_image_url: profileImage || null,
@@ -533,10 +507,15 @@ export default function EmployerProfileScreen({ navigation }: Props) {
 
             } catch (error) {
               console.log("Employer profile error:", error);
+              Alert.alert("Error", "Failed to save profile"); 
+            } finally {
+              setSubmitting(false); // ✅ ALWAYS RUNS
             }
           }}
         >
-          <Text style={styles.saveText}>Proceed</Text>
+          <Text style={styles.saveText}>
+            Create Profile
+          </Text>
         </TouchableOpacity>
 
 
@@ -559,7 +538,7 @@ export default function EmployerProfileScreen({ navigation }: Props) {
             alignItems: "center",
           }}
           //onTouchStart={() => setShowRemoveModal(false)}
-          onTouchStart={() => {}}
+          //onTouchStart={() => {}}
         >
           <View
             style={{

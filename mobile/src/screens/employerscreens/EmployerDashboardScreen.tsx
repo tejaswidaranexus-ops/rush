@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
-import { useTheme } from "../hooks/useTheme";
-import { typography } from "../styles/typography";
-import Header from "../components/AppHeader";
+import { useTheme } from "../../hooks/useTheme";
+import { typography } from "../../styles/typography";
+import Header from "../../components/AppHeader";
 
 export default function EmployerDashboardScreen() {
   const theme = useTheme();

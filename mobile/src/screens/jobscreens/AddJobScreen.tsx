@@ -8,28 +8,28 @@ import {
   BackHandler,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import { useTheme } from "../hooks/useTheme";
-import { useEmployerStore } from "../store/employerStore";
+import { useTheme } from "../../hooks/useTheme";
+import { useEmployerStore } from "../../store/employerStore";
 import { useFocusEffect } from "@react-navigation/native";
-import { createJob, updateJob } from "../services/jobService";
-import { jobDomains, jobRolesByDomain } from "../data/jobTaxonomy";
+import { createJob, updateJob } from "../../services/jobService";
+import { jobDomains, jobRolesByDomain } from "../../data/jobTaxonomy";
+import { useJobStore } from "../../store/jobStore";
 
-import FormScreenWrapper from "../components/FormScreenWrapper";
-import SelectOptionModal from "../components/SelectOptionModal";
-import AlertModal from "../components/AlertModal";
+import FormScreenWrapper from "../../components/FormScreenWrapper";
+import SelectOptionModal from "../../components/SelectOptionModal";
+import AlertModal from "../../components/AlertModal";
+import Step1BasicInfo from "../../components/jobSteps/Step1BasicInfo";
+import Step2Compensation from "../../components/jobSteps/Step2Compensation";
+import Step3JobDetails from "../../components/jobSteps/Step3JobDetails";
+import Step4Employer from "../../components/jobSteps/Step4Employer";
 
-import Step1BasicInfo from "../components/jobSteps/Step1BasicInfo";
-import Step2Compensation from "../components/jobSteps/Step2Compensation";
-import Step3JobDetails from "../components/jobSteps/Step3JobDetails";
-import Step4Employer from "../components/jobSteps/Step4Employer";
-
-import { validateForm } from "../validation/validate";
+import { validateForm } from "../../validation/validate";
 import {
   step1Schema,
   step2Schema,
   step3Schema,
   step4Schema,
-} from "../validation/jobValidation";
+} from "../../validation/jobValidation";
 
 export default function AddJobScreen({ navigation, route }: any) {
   const theme = useTheme();
@@ -47,8 +47,11 @@ export default function AddJobScreen({ navigation, route }: any) {
   const [alertVisible, setAlertVisible] = useState(false);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
 
   const roles = jobRolesByDomain[store.domain] ?? [];
+  const fetchJobs = useJobStore((s) => s.fetchJobs);
+  
 
   // Reset form
   useFocusEffect(
@@ -184,6 +187,10 @@ export default function AddJobScreen({ navigation, route }: any) {
   
 
   const handleSubmit = async () => {
+
+    if (submitting) return;
+
+    // ✅ 1. VALIDATION FIRST (OUTSIDE TRY)
     const allSchemas = {
       ...step1Schema,
       ...step2Schema,
@@ -198,7 +205,7 @@ export default function AddJobScreen({ navigation, route }: any) {
       description: store.description,
       skills: store.skills
         ? store.skills
-            .split(/[, ]+/) // 🔥 split on comma OR space
+            .split(/[, ]+/)
             .map((s: string) => s.trim().toLowerCase())
             .filter(Boolean)
         : [],
@@ -224,10 +231,13 @@ export default function AddJobScreen({ navigation, route }: any) {
     const validationErrors = validateForm(formData, allSchemas);
 
     if (Object.keys(validationErrors).length > 0) {
-      console.log("Step4 Errors:", validationErrors);
       setErrors(validationErrors);
       return;
     }
+
+    setErrors({});
+
+    // ✅ 2. API LOGIC
     const payload = {
       title: store.title,
       domain: store.domain,
@@ -236,7 +246,7 @@ export default function AddJobScreen({ navigation, route }: any) {
 
       skills: store.skills
         ? store.skills
-            .split(/[, ]+/) // ✅ handles comma + space
+            .split(/[, ]+/)
             .map((s: string) => s.trim().toLowerCase())
             .filter(Boolean)
         : [],
@@ -253,7 +263,6 @@ export default function AddJobScreen({ navigation, route }: any) {
       shift: store.shift,
       duration: store.duration,
 
-      // 🔥 FIX HERE
       employer_name: store.employerName,
       contact: store.contact,
 
@@ -265,22 +274,33 @@ export default function AddJobScreen({ navigation, route }: any) {
       longitude: 0,
     };
 
-    if (job) await updateJob(job.id, payload);
-    else await createJob(payload);
+    try {
+      setSubmitting(true);
 
-    resetJobForm();
+      if (job) await updateJob(job.id, payload);
+      else await createJob(payload);
 
-    navigation.reset({
-      index: 0,
-      routes: [
-        {
-          name: "MAIN_TABS",
-          params: {
-            screen: isFirstTimeFlow ? "DASHBOARD" : "JOBS",
+      await fetchJobs();
+
+      resetJobForm();
+
+      navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: "MAIN_TABS",
+            params: {
+              //screen: isFirstTimeFlow ? "DASHBOARD" : "JOBS",
+              screen: "JOBS",
+            },
           },
-        },
-      ],
-    });
+        ],
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -383,7 +403,7 @@ export default function AddJobScreen({ navigation, route }: any) {
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
-                disabled={!isValid}
+                disabled={!isValid || submitting}
                 onPress={handleSubmit}
                 style={{
                   paddingVertical: 10,

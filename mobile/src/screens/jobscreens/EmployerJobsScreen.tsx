@@ -7,20 +7,19 @@ import {
   Pressable,
 } from "react-native";
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { useTheme } from "../hooks/useTheme";
-import { typography } from "../styles/typography";
+import { useTheme } from "../../hooks/useTheme";
+import { typography } from "../../styles/typography";
 import { useNavigation } from "@react-navigation/native";
-import { useEmployerStore } from "../store/employerStore";
 import { useFocusEffect } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
-import GlobalSafeArea from "../components/GlobalSafeArea";
-import { getMyJobs, deleteJob } from "../services/jobService";
-import { Alert } from "react-native";
+import GlobalSafeArea from "../../components/GlobalSafeArea";
+import { deleteJob } from "../../services/jobService";
+import { useJobStore } from "../../store/jobStore";
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../navigation/AppNavigator";
-import AppHeader from "../components/AppHeader";
-import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import { RootStackParamList } from "../../navigation/AppNavigator";
+import AppHeader from "../../components/AppHeader";
+import DeleteConfirmModal from "../../components/DeleteConfirmModal";
 
 
 type Job = {
@@ -46,18 +45,13 @@ export default function EmployerJobsScreen() {
   //const isFirstTimeFlow = useEmployerStore((s) => s.isFirstTimeFlow);
   //const setFirstTimeFlow = useEmployerStore((s) => s.setFirstTimeFlow);
 
-  const [jobs, setJobs] = useState<Job[]>([]);
+  //const [jobs, setJobs] = useState<Job[]>([]);
+  const jobs = useJobStore((s) => s.jobs);
+  const fetchJobs = useJobStore((s) => s.fetchJobs);
+  const loading = useJobStore((s) => s.loading);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
-  const fetchJobs = async () => {
-    try {
-      const res = await getMyJobs();
-      setJobs(res.jobs);
-    } catch (error) {
-      console.log("Fetch jobs error:", error);
-    }
-  };
 
   useFocusEffect(
     useCallback(() => {
@@ -65,9 +59,6 @@ export default function EmployerJobsScreen() {
     }, [])
   );
 
-  useEffect(() => {
-    fetchJobs();
-  }, []);
 
   const handleDelete = (job: Job) => {
     setSelectedJob(job);
@@ -133,11 +124,11 @@ export default function EmployerJobsScreen() {
       </View>*/}
 
       {/* JOB LIST */}
-      {jobs.length === 0 ? (
-        <Text style={{ color: theme.placeholder }}>
-          No jobs posted yet
-        </Text>
-      ) : (
+      {loading ? (
+          <Text>Loading...</Text>
+        ) : jobs.length === 0 ? (
+          <Text>No jobs posted yet</Text>
+        ) : (
         <FlatList
           data={jobs}
           keyExtractor={(item) => item.id}

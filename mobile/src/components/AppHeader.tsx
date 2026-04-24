@@ -12,6 +12,7 @@ import { useThemeStore } from "../store/themeStore";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useEmployerStore } from "../store/employerStore";
 
 export default function AppHeader({ role = "employer" }: { role?: "employer" | "jobseeker" }) {
   const theme = useTheme();
@@ -20,9 +21,15 @@ export default function AppHeader({ role = "employer" }: { role?: "employer" | "
   const currentTheme = useThemeStore((s) => s.theme);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
 
+  const { name } = useEmployerStore();
+
   const handleProfilePress = () => {
     if (role === "employer") {
-      navigation.navigate("EMPLOYER_PROFILE");
+      if (!name) {
+        navigation.navigate("EMPLOYER_PROFILE_CREATE");
+      } else {
+        navigation.navigate("EMPLOYER_PROFILE_VIEW");
+      }
     } else {
       navigation.navigate("JOB_SEEKER_PROFILE");
     }

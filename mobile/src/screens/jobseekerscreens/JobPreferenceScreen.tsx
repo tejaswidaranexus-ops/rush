@@ -6,14 +6,14 @@ import {
   TextInput,
 } from "react-native";
 import React, { useEffect } from "react";
-import { useTheme } from "../hooks/useTheme";
+import { useTheme } from "../../hooks/useTheme";
 import { FontAwesome } from "@expo/vector-icons";
-import styles from "../styles/JobPreference.styles"; 
+import styles from "../../styles/JobPreference.styles"; 
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useJobSeekerStore } from "../store/JobSeekerStore";
-import { jobRolesSkilled } from "../data/constants";
+import { useJobSeekerStore } from "../../store/JobSeekerStore";
+import { jobRolesSkilled } from "../../data/constants";
 
-import { savePreferences } from "../services/preferencesService";
+import { savePreferences } from "../../services/preferencesService";
 
 export default function JobPreferenceScreen({ route, navigation }: any) {
   const theme = useTheme();

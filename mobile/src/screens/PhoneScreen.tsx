@@ -16,12 +16,15 @@ export default function PhoneScreen({ navigation }: any) {
 
   const validatePhone = (text: string) => {
   const numericText = text.replace(/[^0-9]/g, "").slice(0, 10);
-    if (numericText.length === 10) {
-      setPhoneError("");
-    } else {
-      setPhoneError("Phone number must be 10 digits");
-    }
-    setPhone(numericText);
+    if (numericText.length === 0) {
+    setPhoneError("");
+      } else if (numericText.length < 10) {
+        setPhoneError("Enter 10-digit phone number");
+      } else {
+        setPhoneError("");
+      }
+
+      setPhone(numericText); 
   };
 
   
@@ -96,7 +99,7 @@ export default function PhoneScreen({ navigation }: any) {
       </View>
 
       {phoneError ? (
-        <Text style={{ color: "red", marginTop: 5 }}>
+        <Text style={{ color: "#888", marginTop: 5 }}>
           {phoneError}
         </Text>
       ) : null}
@@ -142,10 +145,18 @@ export default function PhoneScreen({ navigation }: any) {
         disabled={!isValid}
         onPress={async () => {
           try {
-            await sendOtp({
+            //await sendOtp({
+            //  phone: `91${phone}`,
+            //  termsAccepted: isAccepted});
+            const res = await sendOtp({
               phone: `91${phone}`,
               termsAccepted: isAccepted
             });
+
+            console.log("OTP from backend:", res.otp); // debug
+
+            alert(`Your OTP is ${res.otp}`); // 👈 SHOW OTP
+
             navigation.navigate("OTP", { phone });
           } catch (error) {
             console.log("Send OTP error:", error);

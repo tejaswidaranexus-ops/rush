@@ -7,41 +7,6 @@ export type FileType = {
   size: number;
 };
 
-type Job = {
-  jobId: string;
-  employerId: string;
-
-  title: string;
-  //category: string;
-  domain: string
-  role: string
-  description?: string;
-  skills?: string;
-
-  openings: number;
-
-  salary: number;
-  paymentFrequency: string;
-  benefits?: string;
-
-  jobLocation: string;
-  jobPincode: string;
-
-  workType: string;
-  shift: string;
-  duration?: string;
-
-  employerName: string;
-  contact: string;
-
-  eligibility?: string;
-  terms?: string;
-  verification?: string;
-
-  createdAt: string;
-  updatedAt?: string;
-  status: "active" | "closed";
-};
 
 type Employer = {
   employerId: string;
@@ -64,6 +29,7 @@ type Employer = {
 
 type EmployerState = {
   resetJobForm: () => void;
+  clearProfile: () => void;
   // 👤 Employer Profile
   employerId: string;
   profileImage: string;
@@ -73,6 +39,7 @@ type EmployerState = {
   location: string;
   pincode: string;
   email: string;
+  phone: string;
   noEmail: boolean;
   businessLinks: string[]; // website / instagram / youtube
   businessProofs: FileType[];
@@ -103,9 +70,6 @@ type EmployerState = {
   verification: string;
   isFirstTimeFlow: boolean;
 
-
-  // 📦 Jobs List
-  jobs: Job[];
 
   // 👤 Employer setters
   setProfileImage: (uri: string) => void;
@@ -142,16 +106,9 @@ type EmployerState = {
   setVerification: (val: string) => void;
   setFirstTimeFlow: (value: boolean) => void;
 
-  profile?: Employer;
+  setProfileFromBackend: (data: any) => void;
 
-  saveProfile: () => void;
-  updateProfile: (updated: Partial<Employer>) => void;
-  deleteProfile: () => void;
 
-  // 🛠 Actions
-  addJob: () => void;
-  updateJob: (id: string, updated: Partial<Job>) => void;
-  deleteJob: (id: string) => void;
 };
 
 
@@ -168,6 +125,7 @@ export const useEmployerStore = create<EmployerState>((set, get) => ({
   location: "",
   pincode: "",
   email: "",
+  phone: "",
   noEmail: false,
   businessLinks: [],
   businessProofs: [],
@@ -195,7 +153,6 @@ export const useEmployerStore = create<EmployerState>((set, get) => ({
   verification: "",
   isFirstTimeFlow: false,
 
-  jobs: [],
 
   // 👤 Employer setters
   setProfileImage: (uri) => set({ profileImage: uri }),
@@ -208,6 +165,20 @@ export const useEmployerStore = create<EmployerState>((set, get) => ({
   setNoEmail: (val) => set({ noEmail: val }),
   setBusinessLinks: (links) => set({ businessLinks: links }),
   setBusinessProofs: (files) => set({ businessProofs: files }),
+
+  clearProfile: () =>
+  set({
+    profileImage: "",
+    name: "",
+    gender: "",
+    business: "",
+    location: "",
+    pincode: "",
+    email: "",
+    phone: "",
+    noEmail: false,
+    businessProofs: [],
+  }),
 
   // 🧾 Job setters
   setTitle: (val) => set({ title: val }),
@@ -231,103 +202,28 @@ export const useEmployerStore = create<EmployerState>((set, get) => ({
   setVerification: (val) => set({ verification: val }),
   setFirstTimeFlow: (value) => set({ isFirstTimeFlow: value }),
 
-  //SAVE
-  saveProfile: () => {
-    const state = get();
-    const now = new Date().toISOString();
 
-    const profile: Employer = {
-      employerId: state.employerId,
-      profileImage: state.profileImage,
-      name: state.name,
-      gender: state.gender,
-      business: state.business,
-      location: state.location,
-      pincode: state.pincode,
-      email: state.email,
-      noEmail: state.noEmail,
-      businessProofs: state.businessProofs,
-      businessLinks: state.businessLinks,
+  setProfileFromBackend: (data) =>
+  set({
+    name: data.full_name || "",
+    profileImage: data.profile_image_url || "",
+    gender: data.gender
+      ? data.gender.charAt(0).toUpperCase() + data.gender.slice(1)
+      : "",
+    business: data.business_name || "",
+    location: data.business_location || "",
+    pincode: data.pincode || "",
+    email: data.business_email || "",
+    phone: data.phone_number || "",
+    noEmail: !data.has_business_email,
+    businessProofs: (data.documents || []).map((url: string, index: number) => ({
+      uri: url,
+      name: `doc_${index}.jpg`,
+      size: 1,
+    })),
+  }),
 
-      createdAt: now,
-      updatedAt: now,
-    };
 
-    set({
-      profile,
-      createdAt: now,
-      updatedAt: now,
-    });
-  },
-
-  // 🛠 Add Job (uses store values directly)
-  addJob: () => {
-    const state = get();
-
-    const now = new Date().toISOString();
-
-    const newJob: Job = {
-      //jobId: Date.now().toString(),
-      jobId: crypto.randomUUID(),
-      employerId: state.employerId,
-
-      title: state.title,
-      //category: state.category,
-      domain: state.domain,
-      role: state.role,
-      description: state.description || undefined,
-      skills: state.skills || undefined,
-      openings: state.openings,
-
-      salary: state.salary,
-      paymentFrequency: state.paymentFrequency,
-      benefits: state.benefits || undefined,
-
-      jobLocation: state.jobLocation,
-      jobPincode: state.jobPincode,
-
-      workType: state.workType,
-      shift: state.shift,
-      duration: state.duration || undefined,
-
-      employerName: state.employerName,
-      contact: state.contact,
-
-      eligibility: state.eligibility || undefined,
-      terms: state.terms || undefined,
-      verification: state.verification || undefined,
-
-      createdAt: now,
-      updatedAt: now,
-      status: "active",
-    };
-
-    set({
-      jobs: [newJob, ...state.jobs], // 👈 newest first
-
-      // reset
-      title: "",
-      //category: "",
-      domain: "",
-      role: "",
-      description: "",
-      skills: "",
-      openings: 0,
-      salary: 0,
-      paymentFrequency: "",
-      benefits: "",
-      jobLocation: "",
-      jobPincode: "",
-      workType: "",
-      shift: "",
-      duration: "",
-      employerName: "",
-      contact: "",
-      eligibility: "",
-      terms: "",
-      verification: "",
-    });
-  },
 
   resetJobForm: () =>
     set({
@@ -353,45 +249,5 @@ export const useEmployerStore = create<EmployerState>((set, get) => ({
       verification: "",
     }),
 
-  //UPDATE
-  updateProfile: (updated) =>
-  set((state) => ({
-    profile: state.profile
-      ? {
-          ...state.profile,
-          ...updated,
-          updatedAt: new Date().toISOString(),
-        }
-      : undefined,
-  })),
 
-  updateJob: (id, updated) =>
-    set((state) => ({
-      jobs: state.jobs.map((j) =>
-        j.jobId === id
-          ? { ...j, ...updated, updatedAt: new Date().toISOString() }
-          : j
-      ),
-    })),
-
-  //DELETE
-
-  deleteProfile: () =>
-  set({
-    profileImage: "",
-    name: "",
-    gender: "",
-    business: "",
-    location: "",
-    pincode: "",
-    email: "",
-    noEmail: false,
-    businessProofs: [],
-    businessLinks: [],
-  }),
-
-  deleteJob: (id) =>
-    set((state) => ({
-      jobs: state.jobs.filter((j) => j.jobId !== id),
-    })),
 })); 

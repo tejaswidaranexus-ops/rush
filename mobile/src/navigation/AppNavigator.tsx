@@ -20,10 +20,10 @@ import OtpScreen from "../screens/OtpScreen";
 
 import RoleSelectionScreen from "../screens/RoleSelectionScreen";
 
-import JobSeekerProfileScreen from "../screens/JobSeekerProfileScreen";
-import JobSeekerDashboardScreen from "../screens/JobSeekerDashboardScreen";
-import AddCollegeDetailsScreen from "../screens/AddCollegeDetailsScreen";
-import JobPreferenceScreen from "../screens/JobPreferenceScreen";
+import JobSeekerProfileScreen from "../screens/jobseekerscreens/JobSeekerProfileScreen";
+import JobSeekerDashboardScreen from "../screens/jobseekerscreens/JobSeekerDashboardScreen";
+import AddCollegeDetailsScreen from "../screens/jobseekerscreens/AddCollegeDetailsScreen";
+import JobPreferenceScreen from "../screens/jobseekerscreens/JobPreferenceScreen";
 import CitySelectionScreen from "../screens/CitySelectionScreen";
 import PositionSelectionScreen from "../screens/PositionSelectionScreen";
 import JobSeekerVerificationScreen from "../screens/JobSeekerVerificationScreen";
@@ -31,12 +31,12 @@ import JobSeekerVerificationScreen from "../screens/JobSeekerVerificationScreen"
 import EmployerTabNavigator from "../components/EmployerTabNavigator";
 
 
-import EmployerProfileScreen from "../screens/EmployerProfileScreen";
-import EmployerDashboardScreen from "../screens/EmployerDashboardScreen";
-import EmployerJobsScreen from "../screens/EmployerJobsScreen";
-import AddJobScreen from "../screens/AddJobScreen";
+import EmployerProfileEditScreen from "../screens/employerscreens/EmployerProfileEditScreen";
+import EmployerDashboardScreen from "../screens/employerscreens/EmployerDashboardScreen";
+import EmployerJobsScreen from "../screens/jobscreens/EmployerJobsScreen";
+import AddJobScreen from "../screens/jobscreens/AddJobScreen";
 
-import JobDetailsScreen from "../screens/JobDetailsScreen";
+import JobDetailsScreen from "../screens/jobscreens/JobDetailsScreen";
 
 // const Stack = createNativeStackNavigator();
 
@@ -61,7 +61,10 @@ export type RootStackParamList = {
 
   MAIN_TABS: { screen?: string };
 
-  EMPLOYER_PROFILE: undefined;
+ // EMPLOYER_PROFILE: { from?: "dashboard" | "role" };
+  EMPLOYER_PROFILE_CREATE: undefined;
+  EMPLOYER_PROFILE_EDIT: undefined;
+  EMPLOYER_PROFILE_VIEW: undefined;
   EMPLOYER_DASHBOARD: undefined;
   JOBS_LIST: undefined;
   ADD_JOB: undefined;
@@ -155,14 +158,46 @@ export default function AppNavigator() {
           })}
         />
 
-        <Stack.Screen 
-          name="EMPLOYER_PROFILE" 
-          component={EmployerProfileScreen}
+        <Stack.Screen
+          name="EMPLOYER_PROFILE_CREATE"
+          component={require("../screens/employerscreens/EmployerProfileCreateScreen").default}
           options={({ navigation }) => ({
             headerTitle: "Create Profile",
             headerLeft: () => (
               <TouchableOpacity
                 onPress={() => navigation.navigate("ROLE")}
+                style={{ margin: 10 }}
+              >
+                <Ionicons name="arrow-back" size={24} color={theme.text} />
+              </TouchableOpacity>
+            ),
+          })}
+        />
+
+        <Stack.Screen
+          name="EMPLOYER_PROFILE_EDIT"
+          component={require("../screens/employerscreens/EmployerProfileEditScreen").default}
+          options={({ navigation }) => ({
+            headerTitle: "Edit Profile",
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate("EMPLOYER_PROFILE_VIEW")}
+                style={{ margin: 10 }}
+              >
+                <Ionicons name="arrow-back" size={24} color={theme.text} />
+              </TouchableOpacity>
+            ),
+          })}
+        />
+
+        <Stack.Screen
+          name="EMPLOYER_PROFILE_VIEW"
+          component={require("../screens/employerscreens/EmployerProfileViewScreen").default}
+          options={({ navigation }) => ({
+            headerTitle: "Profile",
+            headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate("MAIN_TABS", { screen: "DASHBOARD" })}
                 style={{ margin: 10 }}
               >
                 <Ionicons name="arrow-back" size={24} color={theme.text} />

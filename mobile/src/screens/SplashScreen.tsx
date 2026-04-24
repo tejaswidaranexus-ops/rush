@@ -130,7 +130,7 @@ export default function SplashScreen({ navigation }: any) {
           else if (res.user.role === "employer") {
 
             if (!res.hasEmployerProfile) {
-              navigation.replace("EMPLOYER_PROFILE");
+              navigation.replace("EMPLOYER_PROFILE_CREATE");
             } else {
               navigation.reset({
                 index: 0,

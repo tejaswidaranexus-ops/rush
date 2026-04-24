@@ -6,11 +6,11 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { useTheme } from "../hooks/useTheme";
-import { useAuthStore } from "../store/authStore";
-import { deleteJob } from "../services/jobService";
-import { createStyles } from "../styles/JobDetails.styles";
-import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import { useTheme } from "../../hooks/useTheme";
+import { useAuthStore } from "../../store/authStore";
+import { deleteJob } from "../../services/jobService";
+import { createStyles } from "../../styles/JobDetails.styles";
+import DeleteConfirmModal from "../../components/DeleteConfirmModal";
 
 export default function JobDetailsScreen({ route, navigation }: any) {
   const theme = useTheme();

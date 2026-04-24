@@ -5,8 +5,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useTheme } from "../hooks/useTheme";
 
-import EmployerDashboardScreen from "../screens/EmployerDashboardScreen";
-import EmployerJobsScreen from "../screens/EmployerJobsScreen";
+import EmployerDashboardScreen from "../screens/employerscreens/EmployerDashboardScreen";
+import EmployerJobsScreen from "../screens/jobscreens/EmployerJobsScreen";
 
 // TEMP screens (replace later if you have real ones)
 import { Text } from "react-native";

@@ -6,13 +6,13 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import { useTheme } from "../hooks/useTheme";
-import { typography } from "../styles/typography";
+import { useTheme } from "../../hooks/useTheme";
+import { typography } from "../../styles/typography";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useJobSeekerStore } from "../store/JobSeekerStore";
-import styles from "../styles/AddCollegeDetails.styles";
+import { useJobSeekerStore } from "../../store/JobSeekerStore";
+import styles from "../../styles/AddCollegeDetails.styles";
 
-import { saveEducation } from "../services/educationService";
+import { saveEducation } from "../../services/educationService";
 
 export default function AddCollegeDetailsScreen({ route, navigation }: any) {
   const theme = useTheme();

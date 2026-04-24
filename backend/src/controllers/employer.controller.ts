@@ -108,3 +108,53 @@ export const upsertEmployerProfile = async (req: AuthRequest, res: Response) => 
     return res.status(500).json({ error: error.message });
   }
 };
+
+
+
+export const getEmployerProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    // 🔹 get base profile
+    const { data: profile, error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .select("full_name, profile_image_url, phone_number")
+      .eq("id", userId)
+      .single();
+
+    if (profileError) throw profileError;
+
+    // 🔹 get employer profile
+    const { data: employer, error: employerError } = await supabaseAdmin
+      .from("employer_profiles")
+      .select("*")
+      .eq("user_id", userId)
+      .single();
+
+    if (employerError && employerError.code !== "PGRST116") {
+      throw employerError;
+    }
+
+    // 🔹 get documents
+    const { data: documents, error: docError } = await supabaseAdmin
+      .from("employer_documents")
+      .select("document_url")
+      .eq("user_id", userId);
+
+    if (docError) throw docError;
+
+    return res.json({
+      profile: {
+        ...profile,
+        ...employer,
+        documents: documents?.map((d) => d.document_url) || [],
+      },
+    });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message });
+  }
+};

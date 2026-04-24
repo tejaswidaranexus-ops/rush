@@ -10,26 +10,26 @@ import {
   Keyboard,
 } from "react-native";
 import React, { useState } from "react";
-import { useTheme } from "../hooks/useTheme";
-import { typography } from "../styles/typography";
+import { useTheme } from "../../hooks/useTheme";
+import { typography } from "../../styles/typography";
 import { FontAwesome } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as DocumentPicker from "expo-document-picker";
 import { Image } from "react-native";
-import { useJobSeekerStore } from "../store/JobSeekerStore";
+import { useJobSeekerStore } from "../../store/JobSeekerStore";
 import Slider from "@react-native-community/slider";
-import styles from "../styles/JobSeekerProfile.styles";
+import styles from "../../styles/JobSeekerProfile.styles";
 
-import UploadModal from "../components/UploadModal";
-import { useFileUpload } from "../hooks/useFileUpload";
+import UploadModal from "../../components/UploadModal";
+import { useFileUpload } from "../../hooks/useFileUpload";
 
-import { upsertJobseekerProfile } from "../services/jobseekerService";
+import { upsertJobseekerProfile } from "../../services/jobseekerService";
 
-import { validateForm } from "../validation/validate";
-import { jobseekerSchema } from "../validation/jobseeker";
+import { validateForm } from "../../validation/validate";
+import { jobseekerSchema } from "../../validation/jobseeker";
 
-import FormScreenWrapper from "../components/FormScreenWrapper";
+import FormScreenWrapper from "../../components/FormScreenWrapper";
 
 
 

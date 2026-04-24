@@ -6,6 +6,11 @@ RUSH/
 ├── docs/
 ├── README.md
 
+RUSH APP
+├── mobile (React Native - Expo)
+├── backend (Express API)
+└── database (Supabase / PostgreSQL)
+
 
 mobile/
 ├── app/
@@ -30,6 +35,82 @@ mobile/
 ├── tsconfig.json
 └── ...
 
+mobile/
+│
+├── src/
+│   │
+│   ├── components/
+│   │   ├── AlertModal.tsx
+│   │   ├── AppHeader.tsx
+│   │   ├── CitySearch.tsx
+│   │   ├── DeleteConfirmModal.tsx
+│   │   ├── EmployerConfirmModal.tsx
+│   │   ├── EmployerTabNavigator.tsx
+│   │   ├── FormScreenWrapper.tsx
+│   │   ├── GlobalSafeArea.tsx
+│   │   ├── RoleSearch.tsx
+│   │   ├── SelectOptionModal.tsx
+│   │   ├── UploadModal.tsx
+│   │   └── jobSteps/
+│   │       ├── Step1BasicInfo.tsx
+│   │       ├── Step2Compensation.tsx
+│   │       ├── Step3JobDetails.tsx
+│   │       └── Step4Employer.tsx
+│   │
+│   ├── screens/
+│   │   ├── PhoneScreen.tsx
+│   │   ├── OtpScreen.tsx
+│   │   ├── employerscreens/
+│   │   │   ├── EmployerDashboardScreen.tsx
+│   │   │   └── EmployerProfileScreen.tsx
+│   │   ├── jobscreens/
+│   │   │   ├── AddJobScreen.tsx
+│   │   │   └── EmployerJobsScreen.tsx
+│   │   └── jobseekerscreens/
+│   │       ├── JobSeekerProfileScreen.tsx
+│   │       └── (others...)
+│   │
+│   ├── navigation/
+│   │   └── AppNavigator.tsx
+│   │
+│   ├── services/
+│   │   ├── api.ts
+│   │   ├── authService.ts
+│   │   ├── jobService.ts
+│   │   ├── employerService.ts
+│   │   ├── jobseekerService.ts
+│   │   ├── educationService.ts
+│   │   ├── preferencesService.ts
+│   │   └── userService.ts
+│   │
+│   ├── store/ (ZUSTAND)
+│   │   ├── authStore.ts
+│   │   ├── employerStore.ts
+│   │   ├── jobSeekerStore.ts
+│   │   └── themeStore.ts
+│   │
+│   ├── validation/
+│   │   ├── rules.ts
+│   │   ├── employer.ts
+│   │   ├── jobseeker.ts
+│   │   └── jobValidation.ts
+│   │
+│   ├── hooks/
+│   │   └── useTheme.ts
+│   │
+│   ├── styles/
+│   │   ├── typography.ts
+│   │   └── (style files)
+│   │
+│   ├── constants/
+│   │   └── theme/colors.ts
+│   │
+│   └── data/
+│       ├── jobTaxonomy.ts
+│       └── constants.ts
+│
+└── App.tsx
+
 
 backend/
 ├── src/
@@ -51,3 +132,45 @@ backend/
 ├── package.json
 ├── tsconfig.json
 └── .env
+
+backend/
+│
+├── routes/
+│   ├── auth.routes.ts
+│   ├── jobs.routes.ts
+│   ├── employer.routes.ts
+│   ├── jobseeker.routes.ts
+│   └── user.routes.ts
+│
+├── controllers/
+├── services/
+├── middleware/
+│   └── auth.middleware.ts
+│
+├── config/
+│   └── supabase.ts
+│
+└── server.ts / app.ts
+
+🗄️ 4. DATA FLOW (VERY IMPORTANT — YOU SHOULD UNDERSTAND THIS)
+AUTH FLOW
+PhoneScreen → sendOtp()
+OtpScreen → verifyOtp()
+→ token stored in Zustand + AsyncStorage
+→ user fetched via /me
+→ role selection
+
+EMPLOYER FLOW
+Employer Profile → saved via employerService
+↓
+AddJobScreen (4 steps)
+↓
+createJob() → backend → DB
+↓
+EmployerJobsScreen → getMyJobs()
+
+STATE MANAGEMENT
+Zustand stores:
+- authStore → token + user
+- employerStore → job form + employer profile
+- jobSeekerStore → jobseeker data
